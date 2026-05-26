@@ -1,0 +1,5 @@
+May 26 12:01:05 srv-vlc sshd[1234]: Failed password for invalid user admin from 1.1.1.1 port 49232 ssh2
+May 26 12:02:10 srv-vlc sshd[1235]: Failed password for root from 8.8.8.8 port 51122 ssh2
+May 26 12:02:15 srv-vlc sshd[1235]: Failed password for root from 8.8.8.8 port 51125 ssh2
+May 26 12:03:01 srv-vlc sshd[1236]: Accepted password for trinidad from 192.168.1.50 port 52110 ssh2
+May 26 12:05:44 srv-vlc sshd[1237]: Failed password for invalid user test from 1.1.1.1 port 49500 ssh2
