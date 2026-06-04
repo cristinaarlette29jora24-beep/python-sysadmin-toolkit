@@ -1,4 +1,4 @@
-hostname,ip,mac,sistema_operativo,ram_gb,departamento,rol
+jhostname,ip,mac,sistema_operativo,ram_gb,departamento,rol
 SRV-KLW-0001,192.168.43.247,7E:1D:3D:7B:80:37,Windows Server 2022,32,RRHH,Proxy
 SRV-FAN-0002,192.168.204.225,D0:B5:8A:C0:B6:D7,Ubuntu 20.04 LTS,64,IT,Web Server
 SRV-ZJU-0003,10.48.218.50,3E:92:D5:A3:6F:A9,Debian 11,4,Operaciones,DNS
