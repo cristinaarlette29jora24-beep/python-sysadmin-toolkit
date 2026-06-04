@@ -15,11 +15,8 @@ def tarea_mensual_automatizada() -> None:
     exportar_a_excel_ejecutivo(df_criticos, ruta_salida="data/informe_ejecutivo_mensual.xlsx")
     print("⏰ [DEMONIO] Tarea completada con éxito. Esperando próximo ciclo...")
 
-# Programamos para que corra cada hora como pide la rúbrica
-schedule.every().hour.do(tarea_mensual_automatizada)
-
-# Nota didáctica: Si quieres probarlo en vivo ante el tutor, descomenta la línea de abajo para que corra cada 10 segundos:
-# schedule.every(10).seconds.do(tarea_mensual_automatizada)
+# schedule.every().hour.do(tarea_mensual_automatizada)
+schedule.every(10).seconds.do(tarea_mensual_automatizada)
 
 if __name__ == "__main__":
     print("🚀 Demonio de administración Python activado. Presiona Ctrl+C para detenerlo...")
