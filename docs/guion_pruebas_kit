@@ -1,0 +1,224 @@
+# PYTHON SYSADMIN TOOLKIT — Guión Técnico de Pruebas
+**Módulo: ASIR — CEAC Valencia**
+
+---
+
+## PASO 1 — Setup del Entorno y Verificación de Type Hints
+
+Se verifica que Python 3 está instalado, el entorno virtual aislado funciona y que mypy no detecta errores de tipado en el script principal.
+
+**Comandos ejecutados:**
+```bash
+python --version
+pip list
+pip install mypy
+mypy sys_toolkit.py
+python sys_toolkit.py
+```
+
+**Resultados:**
+| Comando | Resultado |
+|---|---|
+| `python --version` | Python 3.14.5 ✅ |
+| `pip list` (venv limpio) | Solo pip 26.1.1 ✅ |
+| `mypy sys_toolkit.py` | Success: no issues found ✅ |
+| `python sys_toolkit.py` → opción 6 | Menú funciona, salida limpia ✅ |
+
+---
+
+## PASO 2 — Automatización del Sistema Operativo
+
+Se prueba `check_ping()` con una IP accesible y una no alcanzable, y la función de espacio en disco sobre `C:\`.
+
+**Comandos ejecutados:**
+```bash
+python -c "from os_utils import check_ping; print(check_ping('8.8.8.8'))"
+python -c "from os_utils import check_ping; print(check_ping('192.168.99.99'))"
+python -c "from os_utils import check_disk_space; check_disk_space('C:\\')"
+```
+
+**Resultados:**
+| Comando | Resultado |
+|---|---|
+| `check_ping('8.8.8.8')` | True ✅ |
+| `check_ping('192.168.99.99')` | False ✅ |
+| `check_disk_space('C:\\')` | 25.38% libre — niveles seguros ✅ |
+
+---
+
+## PASO 3 — Parseo de Logs y Estructuras de Datos
+
+Se verifica que `analizar_intentos_fallidos()` lee `auth.log`, extrae IPs fallidas y devuelve un diccionario con conteo por IP eliminando duplicados mediante Set.
+
+**Inspección de funciones disponibles:**
+```bash
+python -c "import log_parser; print(dir(log_parser))"
+# Salida: ['analizar_intentos_fallidos', 'ejecutar_auditoria', ...]
+```
+
+**Prueba del conteo de IPs:**
+```bash
+python -c "
+from log_parser import analizar_intentos_fallidos
+result = analizar_intentos_fallidos()
+print(result)
+"
+```
+
+**Salida obtenida:**
+```
+{'1.1.1.1': 2, '8.8.8.8': 2}
+```
+El diccionario muestra cada IP única con el número exacto de intentos fallidos. ✅
+
+---
+
+## PASO 4 — Programación Orientada a Objetos en Redes
+
+Se instancian `Router` y `Server` (heredan de `NetworkDevice`) y se llama a `audit_device()` en cada una para verificar el polimorfismo.
+
+**Comando ejecutado:**
+```bash
+python -c "
+from network_models import Router, Server
+r = Router('router-01', '192.168.1.1', 'AA:BB:CC:DD:EE:FF', 4)
+s = Server('srv-01', '10.0.0.5', '11:22:33:44:55:66', 'Ubuntu 22.04')
+r.audit_device()
+s.audit_device()
+print(isinstance(r, object))
+"
+```
+
+**Salida obtenida:**
+```
+🛡️  [AUDITORÍA ROUTER] -> Evaluando router-01 (192.168.1.1)
+   -> Verificando tablas de enrutamiento en dirección MAC: AA:BB:CC:DD:EE:FF
+   -> Alerta: Revisar que las 4 interfaces tengan ACLs aplicadas.
+🖥️  [AUDITORÍA SERVIDOR] -> Evaluando srv-01 (10.0.0.5)
+   -> Sistema Operativo detectado: Ubuntu 22.04
+   -> Alerta SecOps: Comprobar parches críticos de seguridad y accesos SSH en 11:22:33:44:55:66
+True
+```
+✅
+
+---
+
+## PASO 5 — Integración de APIs y Seguridad
+
+Se instala `requests`, se consulta `ipinfo.io` con `geolocalizar_ip()` y se muestra la tabla de atacantes combinando datos del log con la geolocalización.
+
+**Comandos ejecutados:**
+```bash
+pip install requests
+
+python -c "from threat_intel import geolocalizar_ip; print(geolocalizar_ip('8.8.8.8'))"
+
+python -c "
+from log_parser import analizar_intentos_fallidos
+from threat_intel import mostrar_tabla_ataques
+ips = analizar_intentos_fallidos()
+mostrar_tabla_ataques(ips)
+"
+```
+
+**Tabla de ataques obtenida:**
+```
+=====================================================================================
+IP ATACANTE        | INTENTOS   | PAÍS     | ORGANIZACIÓN / ISP
+=====================================================================================
+1.1.1.1            | 2          | AU       | AS13335 Cloudflare, Inc.
+8.8.8.8            | 2          | US       | AS15169 Google LLC
+=====================================================================================
+```
+✅
+
+---
+
+## PASO 6 — Manipulación Masiva de Inventarios con Pandas
+
+Se instalan `faker`, `pandas` y `openpyxl`. Se genera un inventario de 1000 servidores ficticios y se filtran y agrupan con pandas.
+
+**Comandos ejecutados:**
+```bash
+pip install faker pandas openpyxl
+python generate_inventory.py
+python -c "
+import pandas as pd
+df = pd.read_csv('inventory.csv')
+print(len(df))
+print(df.columns.tolist())
+"
+python -c "from inventory_manager import procesar_inventario; procesar_inventario()"
+```
+
+**Resultados:**
+```
+Filas generadas: 1000
+Columnas: ['hostname', 'ip', 'mac', 'sistema_operativo', 'ram_gb', 'departamento', 'rol']
+Servidores críticos detectados: 408
+Departamentos: IT, Logística, RRHH, Dirección, Finanzas, Operaciones, Marketing
+```
+✅
+
+---
+
+## PASO 7 — Generación de Informes Ejecutivos en Excel
+
+Se ejecuta `excel_reporter.py` que usa `.to_excel()` para generar un informe formateado con los servidores críticos.
+
+**Comandos ejecutados:**
+```bash
+python excel_reporter.py
+dir data\*.xlsx
+```
+
+**Resultado:**
+```
+Archivo: data/informe_servidores_criticos.xlsx
+Tamaño: 27.264 bytes — Fecha: 04/06/2026
+```
+✅
+
+---
+
+## PASO 8 — Fiabilidad, Pruebas Unitarias y Schedule
+
+### 8.1 — Pytest
+```bash
+pip install pytest schedule
+pytest test_toolkit.py -v
+```
+**Salida:**
+```
+platform win32 -- Python 3.14.5, pytest-9.0.3
+test_toolkit.py::test_conteo_ips_atacantes PASSED  [100%]
+1 passed in 0.30s
+```
+✅
+
+### 8.2 — Try/Except: archivo inexistente
+```bash
+python -c "from log_parser import analizar_intentos_fallidos; analizar_intentos_fallidos('archivo_falso.log')"
+```
+**Salida:**
+```
+❌ Error: No se encuentra el archivo de log en 'archivo_falso.log'
+```
+Sin Traceback — error controlado correctamente. ✅
+
+### 8.3 — Demonio Schedule
+Se modifica temporalmente `scheduler_daemon.py` a `schedule.every(10).seconds` para verificar la ejecución en tiempo real.
+```bash
+python scheduler_daemon.py
+```
+**Salida:**
+```
+🚀 Demonio de administración Python activado. Presiona Ctrl+C para detenerlo...
+⏰ [DEMONIO] Iniciando ejecución programada automática: 2026-06-04 11:12:31
+✅ Inventario guardado en 'inventory.csv' con 1000 registros.
+⚠️  Servidores críticos detectados: 426
+✅ ¡Reporte Excel formateado y guardado correctamente!
+⏰ [DEMONIO] Tarea completada con éxito. Esperando próximo ciclo...
+```
+✅
+
